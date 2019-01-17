@@ -29,11 +29,11 @@ void reboot_task(void *pvParameters)
         if (packet.startsWith("reboot-now"))
         {
             Serial.println("reboot-now");
+            udp.clear_packet_buffer();
             udp.disconnect();
             system_restart();
             delay(2000);
         }
-        udp.clear_packet_buffer();
         delay(1000);
     }
 }
@@ -54,11 +54,11 @@ void setup()
 
 void loop()
 {
-    udp.recieve_packet();
-    String commands = udp.get_packet_buffer(); // コマンド文字列受け取り
+    int packet_length = udp.recieve_packet();
 
-    if (commands.length() > 0)
+    if (packet_length > 0)
     {
+        String commands = udp.get_packet_buffer(); // コマンド文字列受け取り
         Serial.println("get packet Datas");
         int model_size = 50; //BlockModelの配列のサイズ
 
@@ -69,13 +69,12 @@ void loop()
 
         //データ削除
         udp.clear_packet_buffer();
-        memset(block_models, '\0', model_size);
-        // memset(for_decomposed_models, '\0', model_size);
+        memset(block_models, '\0', sizeof(block_models));
 
         //完了通知
         Serial.println("Done");
         char sendText[] = "Done";
-        udp.send_data(udp.get_remote_ip(), sendText);
+        udp.send_data(sendText);
 
         motor.coast();
     }
@@ -342,7 +341,7 @@ int find_loop_scope(BlockModel block_models[50], int loop_start_index, int loop_
             int loop_end_index = i;
             execute_loop_command(range_loop_blocks, loop_count);
 
-            memset(range_loop_blocks, '\0', model_size);
+            memset(range_loop_blocks, '\0', sizeof(range_loop_blocks));
             return loop_end_index;
         }
         else
@@ -457,8 +456,9 @@ int find_if_scope(BlockModel block_models[50], int if_start_index)
                     motor.run_motor(true_blocks[j]);
                 }
             }
-            memset(true_blocks, '\0', model_size);
-            memset(false_blocks, '\0', model_size);
+
+            memset(true_blocks, '\0', sizeof(true_blocks));
+            memset(false_blocks, '\0', sizeof(false_blocks));
             return if_end_index;
         }
         else
@@ -488,8 +488,9 @@ int find_if_scope(BlockModel block_models[50], int if_start_index)
                     motor.run_motor(false_blocks[j]);
                 }
             }
-            memset(true_blocks, '\0', model_size);
-            memset(false_blocks, '\0', model_size);
+
+            memset(true_blocks, '\0', sizeof(true_blocks));
+            memset(false_blocks, '\0', sizeof(false_blocks));
             return if_end_index;
         }
     }
@@ -522,8 +523,9 @@ int find_if_scope(BlockModel block_models[50], int if_start_index)
                     motor.run_motor(true_blocks[j]);
                 }
             }
-            memset(true_blocks, '\0', model_size);
-            memset(false_blocks, '\0', model_size);
+
+            memset(true_blocks, '\0', sizeof(true_blocks));
+            memset(false_blocks, '\0', sizeof(false_blocks));
             return if_end_index;
         }
         else
@@ -553,8 +555,9 @@ int find_if_scope(BlockModel block_models[50], int if_start_index)
                     motor.run_motor(false_blocks[j]);
                 }
             }
-            memset(true_blocks, '\0', model_size);
-            memset(false_blocks, '\0', model_size);
+
+            memset(true_blocks, '\0', sizeof(true_blocks));
+            memset(false_blocks, '\0', sizeof(false_blocks));
             return if_end_index;
         }
     }

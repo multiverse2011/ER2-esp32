@@ -22,13 +22,18 @@ void Udp::setup_udp(char ssid[], char password[], IPAddress local_ip, IPAddress 
   Serial.println(" connected");
   Serial.println(WiFi.localIP());
 
+  long rssi = WiFi.RSSI();
+  Serial.print("signal strength (RSSI):");
+  Serial.print(rssi);
+  Serial.println(" dBm");
+
   Serial.println("Starting UDP");
   wifi_udp.begin(local_port); // UDP通信の開始(引数はポート番号)
   Serial.print("Local port: ");
   Serial.println(local_port);
 }
 
-void Udp::recieve_packet()
+int Udp::recieve_packet()
 {
   int packet_size = wifi_udp.parsePacket();
   
@@ -39,36 +44,35 @@ void Udp::recieve_packet()
     Serial.println(packet_size);
 
     // 実際にパケットを読む
+    clear_packet_buffer();
     wifi_udp.read(packet_buffer, UDP_TX_PACKET_MAX_SIZE);
     Serial.println("Contents:");
     Serial.println(packet_buffer);
   }
+
+  return packet_size;
 }
 
 String Udp::get_packet_buffer()
 {
-  String packetStr = String(packet_buffer);
+  String packetStr = String(packet_buffer);  //substringなど扱いたいのでString型にキャスト
   return packetStr;
 }
 
 void Udp::clear_packet_buffer()
 {
-  int packetBuffer_length = strlen(packet_buffer);
-  memset(packet_buffer ,'\0',packetBuffer_length);
+  memset(packet_buffer ,'\0', sizeof(packet_buffer));
 }
 
-void Udp::send_data(IPAddress remote_ip, char text[])
+void Udp::send_data(char text[])
 { 
   Serial.println("send...");
-  
-  wifi_udp.beginPacket(remote_ip, local_port);
+
+  wifi_udp.beginPacket(wifi_udp.remoteIP(), local_port);
   wifi_udp.printf(text);
   wifi_udp.endPacket();
 }
+
 void Udp::disconnect() {
   WiFi.disconnect();
-}
-
-IPAddress Udp::get_remote_ip() {
-  return wifi_udp.remoteIP();
 }
