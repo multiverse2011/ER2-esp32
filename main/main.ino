@@ -107,34 +107,10 @@ int generateSpeed(int flag, int app_speed)
     if (flag == 1)
     {
         return app_speed + left_num;
-        // switch (app_speed)
-        // {
-        // // 最低速度
-        // case 1:
-        //     return MOTOR_POWER_LOW + left_num;
-        // // 真ん中
-        // case 2:
-        //     return MOTOR_POWER_MIDDLE + left_num;
-        // // 最速
-        // case 3:
-        //     return MOTOR_POWER_HIGH + left_num;
-        // }
     }
     else if (flag == 2)
     {
         return app_speed + right_num;
-        // switch (app_speed)
-        // {
-        // // 最低速度
-        // case 1:
-        //     return MOTOR_POWER_LOW + right_num;
-        // // 真ん中
-        // case 2:
-        //     return MOTOR_POWER_MIDDLE + right_num;
-        // // 最速
-        // case 3:
-        //     return MOTOR_POWER_HIGH + right_num;
-        // }
     }
     return 0;
 }
