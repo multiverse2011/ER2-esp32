@@ -47,7 +47,7 @@ void setup()
 
     //Wifi設定
     udp.setup_udp(ssid, password, local_IP, gateway, subnet);
-
+    udp.clear_packet_buffer();
     motor = Motor();
     sensor = Sensor();
 }
@@ -56,7 +56,7 @@ void loop()
 {
     udp.recieve_packet();
     String commands = udp.get_packet_buffer(); // コマンド文字列受け取り
-
+    udp.clear_packet_buffer();
     if (commands.length() > 0)
     {
         Serial.println("get packet Datas");
@@ -106,33 +106,35 @@ int generateSpeed(int flag, int app_speed)
     }
     if (flag == 1)
     {
-        switch (app_speed)
-        {
-        // 最低速度
-        case 1:
-            return MOTOR_POWER_LOW + left_num;
-        // 真ん中
-        case 2:
-            return MOTOR_POWER_MIDDLE + left_num;
-        // 最速
-        case 3:
-            return MOTOR_POWER_HIGH + left_num;
-        }
+        return app_speed + left_num;
+        // switch (app_speed)
+        // {
+        // // 最低速度
+        // case 1:
+        //     return MOTOR_POWER_LOW + left_num;
+        // // 真ん中
+        // case 2:
+        //     return MOTOR_POWER_MIDDLE + left_num;
+        // // 最速
+        // case 3:
+        //     return MOTOR_POWER_HIGH + left_num;
+        // }
     }
     else if (flag == 2)
     {
-        switch (app_speed)
-        {
-        // 最低速度
-        case 1:
-            return MOTOR_POWER_LOW + right_num;
-        // 真ん中
-        case 2:
-            return MOTOR_POWER_MIDDLE + right_num;
-        // 最速
-        case 3:
-            return MOTOR_POWER_HIGH + right_num;
-        }
+        return app_speed + right_num;
+        // switch (app_speed)
+        // {
+        // // 最低速度
+        // case 1:
+        //     return MOTOR_POWER_LOW + right_num;
+        // // 真ん中
+        // case 2:
+        //     return MOTOR_POWER_MIDDLE + right_num;
+        // // 最速
+        // case 3:
+        //     return MOTOR_POWER_HIGH + right_num;
+        // }
     }
     return 0;
 }
