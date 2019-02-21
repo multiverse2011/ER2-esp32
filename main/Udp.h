@@ -13,7 +13,7 @@ class Udp
     // wifiの設定
 
     WiFiUDP wifi_udp;
-    int local_port = 10000; // ポート番号
+    int local_port = 50000; // ポート番号
     char packet_buffer[UDP_TX_PACKET_MAX_SIZE];
     String cmd_plus_split[UDP_TX_PACKET_MAX_SIZE] = {"\0"};
     String cmd_and_split[UDP_TX_PACKET_MAX_SIZE] = {"\0"};
