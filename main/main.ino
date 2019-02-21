@@ -11,7 +11,6 @@ Udp udp;
 Sensor sensor;
 
 char ssid[] = "ERS-AP";
-char password[] = "robop0304";
 IPAddress local_IP(192, 168, 1, 101); // 下3桁を101から機体ごとに連番で指定
 IPAddress gateway(192, 168, 1, 1);
 IPAddress subnet(255, 255, 255, 0);
@@ -42,7 +41,7 @@ void setup()
     xTaskCreate(reboot_task, "reboot_task", 1024, NULL, 1, NULL);
 
     //Wifi設定
-    udp.setup_udp(ssid, password, local_IP, gateway, subnet);
+    udp.setup_udp(ssid, local_IP, gateway, subnet);
     udp.clear_packet_buffer();
     motor = Motor();
     sensor = Sensor();

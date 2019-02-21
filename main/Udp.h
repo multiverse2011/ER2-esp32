@@ -20,7 +20,7 @@ class Udp
 
   public:
     Udp();
-    void setup_udp(char ssid[], char password[], IPAddress local_ip, IPAddress gateway, IPAddress subnet);
+    void setup_udp(char ssid[], IPAddress local_ip, IPAddress gateway, IPAddress subnet);
     void recieve_packet();
     void send_data(IPAddress remote_ip, char text[]);
     String get_packet_buffer();
