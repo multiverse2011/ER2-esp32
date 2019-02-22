@@ -104,8 +104,8 @@ void Motor::right(uint32_t pwm)
     }
     ledcWrite(CHANNEL_0, 0);
     ledcWrite(CHANNEL_1, pwm);
-    ledcWrite(CHANNEL_2, 0);
-    ledcWrite(CHANNEL_3, pwm);
+    ledcWrite(CHANNEL_2, pwm);
+    ledcWrite(CHANNEL_3, 0);
 }
 
 void Motor::left(uint32_t pwm)
