@@ -4,19 +4,16 @@
 #include "BlockModel.h"
 #include "esp_system.h"
 
+#define BREAK 100
+
 Motor motor;
 Udp udp;
 Sensor sensor;
 
 char ssid[] = "ERS-AP";
-char password[] = "robop0304";
 IPAddress local_IP(192, 168, 1, 101); // 下3桁を101から機体ごとに連番で指定
 IPAddress gateway(192, 168, 1, 1);
 IPAddress subnet(255, 255, 255, 0);
-
-int MOTOR_POWER_LOW = 60;
-int MOTOR_POWER_MIDDLE = 80;
-int MOTOR_POWER_HIGH = 100;
 
 void reboot_task(void *pvParameters)
 {
@@ -44,8 +41,8 @@ void setup()
     xTaskCreate(reboot_task, "reboot_task", 1024, NULL, 1, NULL);
 
     //Wifi設定
-    udp.setup_udp(ssid, password, local_IP, gateway, subnet);
-
+    udp.setup_udp(ssid, local_IP, gateway, subnet);
+    udp.clear_packet_buffer();
     motor = Motor();
     sensor = Sensor();
 }
@@ -54,7 +51,7 @@ void loop()
 {
     udp.recieve_packet();
     String commands = udp.get_packet_buffer(); // コマンド文字列受け取り
-
+    udp.clear_packet_buffer();
     if (commands.length() > 0)
     {
         Serial.println("get packet Datas");
@@ -104,33 +101,11 @@ int generateSpeed(int flag, int app_speed)
     }
     if (flag == 1)
     {
-        switch (app_speed)
-        {
-        // 最低速度
-        case 1:
-            return MOTOR_POWER_LOW + left_num;
-        // 真ん中
-        case 2:
-            return MOTOR_POWER_MIDDLE + left_num;
-        // 最速
-        case 3:
-            return MOTOR_POWER_HIGH + left_num;
-        }
+        return app_speed + left_num;
     }
     else if (flag == 2)
     {
-        switch (app_speed)
-        {
-        // 最低速度
-        case 1:
-            return MOTOR_POWER_LOW + right_num;
-        // 真ん中
-        case 2:
-            return MOTOR_POWER_MIDDLE + right_num;
-        // 最速
-        case 3:
-            return MOTOR_POWER_HIGH + right_num;
-        }
+        return app_speed + right_num;
     }
     return 0;
 }
@@ -372,7 +347,7 @@ void execute_loop_command(BlockModel range_loop_blocks[50], int loop_count)
             {
                 int if_start_index = j;
                 int if_end_index = find_if_scope(range_loop_blocks, if_start_index);
-                if(if_end_index == 0)
+                if(if_end_index == BREAK)
                 {
                     return; //breakなら関数処理終了
                 }
@@ -409,6 +384,7 @@ int find_if_scope(BlockModel block_models[50], int if_start_index)
         else if (is_if_end)
         {
             if_end_index = i;
+            break;
         }
         else if (is_true_models)
         {
@@ -441,7 +417,7 @@ int find_if_scope(BlockModel block_models[50], int if_start_index)
                 }
                 else if (is_break)
                 {
-                    return 0;
+                    return BREAK;
                 }
                 else if (is_loop_start)
                 {
@@ -472,7 +448,7 @@ int find_if_scope(BlockModel block_models[50], int if_start_index)
                 }
                 else if (is_break)
                 {
-                    return 0;
+                    return BREAK;
                 }
                 else if (is_loop_start)
                 {
@@ -506,7 +482,7 @@ int find_if_scope(BlockModel block_models[50], int if_start_index)
                 }
                 else if (is_break)
                 {
-                    return 0;
+                    return BREAK;
                 }
                 else if (is_loop_start)
                 {
@@ -537,7 +513,7 @@ int find_if_scope(BlockModel block_models[50], int if_start_index)
                 }
                 else if (is_break)
                 {
-                    return 0;
+                    return BREAK;
                 }
                 else if (is_loop_start)
                 {

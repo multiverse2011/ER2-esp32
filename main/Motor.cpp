@@ -56,6 +56,7 @@ void Motor::run_motor(BlockModel blockModel) //int state, uint32_t left_pwm, uin
     delay(200);
     brake();
     delay(400);
+    coast();
 }
 
 void Motor::forward(uint32_t left_pwm, uint32_t right_pwm)
@@ -103,7 +104,7 @@ void Motor::right(uint32_t pwm)
     }
     ledcWrite(CHANNEL_0, 0);
     ledcWrite(CHANNEL_1, pwm);
-    ledcWrite(CHANNEL_2, 0);
+    ledcWrite(CHANNEL_2, pwm);
     ledcWrite(CHANNEL_3, 0);
 }
 
@@ -114,7 +115,7 @@ void Motor::left(uint32_t pwm)
     {
         pwm = VALUE_MAX;
     }
-    ledcWrite(CHANNEL_0, 0);
+    ledcWrite(CHANNEL_0, pwm);
     ledcWrite(CHANNEL_1, 0);
     ledcWrite(CHANNEL_2, 0);
     ledcWrite(CHANNEL_3, pwm);

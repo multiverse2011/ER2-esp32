@@ -5,12 +5,12 @@
 
 Udp::Udp(){}
 
-void Udp::setup_udp(char ssid[], char password[], IPAddress local_ip, IPAddress gateway, IPAddress subnet)
+void Udp::setup_udp(char ssid[], IPAddress local_ip, IPAddress gateway, IPAddress subnet)
 {
   WiFi.config(local_ip, gateway, subnet);
   delay(100);
 
-  WiFi.begin(ssid, password);
+  WiFi.begin(ssid);
   delay(100);
 
   Serial.print("WiFi connecting");
@@ -19,6 +19,7 @@ void Udp::setup_udp(char ssid[], char password[], IPAddress local_ip, IPAddress 
     Serial.print(".");
     delay(100);
   }
+  //Serial.println(WiFi.status());
   Serial.println(" connected");
   Serial.println(WiFi.localIP());
 
