@@ -384,6 +384,7 @@ int find_if_scope(BlockModel block_models[50], int if_start_index)
         else if (is_if_end)
         {
             if_end_index = i;
+            break;
         }
         else if (is_true_models)
         {
